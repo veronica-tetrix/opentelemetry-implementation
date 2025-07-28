@@ -46,9 +46,9 @@ async def get_products():
 @app.get("/products/recommend")
 async def recommend_products(request: Request):
     with tracer.start_as_current_span("recommend_products") as span:
-        parent_context = extract(dict(request.headers))
+        parent_context = extract(dict(request.headers)) # receives that trace context, so both services are part of the same trace
         
-        # Simple recommendation for demostration, return all products
+        # simple recommendation for demostration, return all products
         products = list(products_db.values())
         return products
 

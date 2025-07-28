@@ -1,12 +1,15 @@
+# accept traces from any app that sends OTLP data to port 4317
 receivers:
   otlp:
     protocols:
       grpc:
         endpoint: 0.0.0.0:4317
 
+# batch traces for effiency
 processors:
   batch:
 
+# send traces to Jaeger and print them in logs
 exporters:
   otlp:
     endpoint: jaeger:4317
@@ -16,6 +19,7 @@ exporters:
   logging:
     verbosity: detailed
 
+# take traces -> batch them -> send to Jaeger
 service:
   pipelines:
     traces:
