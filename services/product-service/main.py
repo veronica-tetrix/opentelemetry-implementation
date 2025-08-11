@@ -51,6 +51,10 @@ async def recommend_products(request: Request):
         # simple recommendation for demostration, return all products
         products = list(products_db.values())
         return products
+    # TODO: test multiple functions
+    # add one more services
+    # use open search dashboard instead of jaeger
+    # add more calls
 
 if __name__ == "__main__":
     import uvicorn

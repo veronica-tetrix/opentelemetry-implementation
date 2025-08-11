@@ -43,7 +43,25 @@ users_db = {
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "service": SERVICE_NAME}
+    # return {"status": "healthy", "service": SERVICE_NAME}
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(f"{PRODUCT_SERVICE_URL}/health")
+            product_service_healthy = response.status_code == 200
+    except:
+        product_service_healthy = False
+
+    database_healthy = len(users_db) > 0
+    overall_healthy = product_service_healthy and database_healthy
+    
+    return {
+        "status": "healthy" if overall_healthy else "unhealthy",
+        "service": SERVICE_NAME,
+        "dependencies": {
+            "product_service": "healthy" if product_service_healthy else "unhealthy",
+            "database": "healthy" if database_healthy else "unhealthy"
+        }
+    }
 
 @app.get("/users")
 async def get_users():
