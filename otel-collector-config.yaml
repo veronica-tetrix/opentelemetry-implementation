@@ -4,25 +4,35 @@ receivers:
     protocols:
       grpc:
         endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
 
-# batch traces for effiency
+# batch traces for efficiency (immediate for debugging)
 processors:
   batch:
+    timeout: 1s
+    send_batch_size: 1
 
-# send traces to Jaeger and print them in logs
+# send traces to multiple destinations
 exporters:
-  otlp:
+  # Send to Jaeger using OTLP gRPC
+  otlp/jaeger:
     endpoint: jaeger:4317
     tls:
       insecure: true
-  
+      
+  # Send traces directly to OpenSearch using Elasticsearch exporter  
+  elasticsearch/traces:
+    endpoints: [http://opensearch:9200]
+    index: "otel-traces"
+      
   logging:
     verbosity: detailed
 
-# take traces -> batch them -> send to Jaeger
+# take traces -> batch them -> send to both Jaeger and OpenSearch
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp, logging]
+      exporters: [otlp/jaeger, elasticsearch/traces, logging]
