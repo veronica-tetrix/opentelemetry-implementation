@@ -1,4 +1,4 @@
-# accept traces from any app that sends OTLP data to port 4317
+# accept traces and metrics from any app that sends OTLP data
 receivers:
   otlp:
     protocols:
@@ -7,32 +7,49 @@ receivers:
       http:
         endpoint: 0.0.0.0:4318
 
-# batch traces for efficiency (immediate for debugging)
+# batch traces and metrics for efficiency (immediate for debugging)
 processors:
   batch:
     timeout: 1s
     send_batch_size: 1
+    
+  # add resource attributes for better identification
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: "development"
+        action: upsert
 
-# send traces to multiple destinations
+# send traces and metrics to multiple destinations
 exporters:
-  # Send to Jaeger using OTLP gRPC
+  # send to Jaeger using OTLP gRPC
   otlp/jaeger:
     endpoint: jaeger:4317
     tls:
       insecure: true
       
-  # Send traces directly to OpenSearch using Elasticsearch exporter  
+  # send traces directly to OpenSearch using Elasticsearch exporter
   elasticsearch/traces:
     endpoints: [http://opensearch:9200]
     index: "otel-traces"
-      
+    
+  # send metrics to Prometheus only (elasticsearch exporter doesn't support metrics well)
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    
+  # debug output
   logging:
     verbosity: detailed
 
-# take traces -> batch them -> send to both Jaeger and OpenSearch
+# configure pipelines for traces and metrics
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch]
+      processors: [resource, batch]
       exporters: [otlp/jaeger, elasticsearch/traces, logging]
+      
+    metrics:
+      receivers: [otlp]
+      processors: [resource, batch]
+      exporters: [prometheus, logging]
