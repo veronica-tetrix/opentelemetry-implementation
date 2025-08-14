@@ -38,8 +38,8 @@ curl http://localhost:8001/users/1/shopping-analysis
 Generate traces run:
 ```bash
 # different users with session tracking
-curl -H "x-client-id: client-001" -H "x-session-id: session-abc" "http://localhost:8001/products/recommend?user_id=1001&category=electronics"
-curl -H "x-client-id: client-002" -H "x-session-id: session-xyz" "http://localhost:8001/products/recommend?user_id=2002"
+curl -H "x-client-id: client-001" -H "x-session-id: session-abc" "http://localhost:8000/products/recommend?user_id=1001&category=electronics"
+curl -H "x-client-id: client-002" -H "x-session-id: session-xyz" "http://localhost:8000/products/recommend?user_id=2002"
 ```
 
 #### View Traces
@@ -54,8 +54,13 @@ curl -H "x-client-id: client-002" -H "x-session-id: session-xyz" "http://localho
 
 #### View Traces
 
-In Jaeger UI (for better trace visualization):
+**Jaeger UI** (for better trace visualization):
 http://localhost:16686
+
+**Note**: If Jaeger fails to start initially due to OpenSearch connection issues, restart it:
+```bash
+docker restart jaeger
+```
    - `user-service: get_user_recommendations` 
    - `product-service: recommend_products`
    - `product-service: calculate_user_score`
