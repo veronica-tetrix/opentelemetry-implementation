@@ -43,6 +43,16 @@ curl -H "x-client-id: client-002" -H "x-session-id: session-xyz" "http://localho
 ```
 
 #### View Traces
+#### Custom Metadata Injection
+
+Generate traces run:
+```bash
+# different users with session tracking
+curl -H "x-client-id: client-001" -H "x-session-id: session-abc" "http://localhost:8001/products/recommend?user_id=1001&category=electronics"
+curl -H "x-client-id: client-002" -H "x-session-id: session-xyz" "http://localhost:8001/products/recommend?user_id=2002"
+```
+
+#### View Traces
 
 In Jaeger UI (for better trace visualization):
 http://localhost:16686
@@ -55,6 +65,11 @@ http://localhost:16686
    - `inventory-service: get_inventory`
    - `inventory-service: check_warehouse_capacity`
    - `inventory-service: calculate_shipping_time`
+   - Service: `product-service` 
+   - Click any trace -> expand spans -> see custom metadata:
+   - `business.user_id`, `business.session_id`
+   - `performance.execution_time_ms`, `system.memory_usage_mb`
+   - `custom.operation_type`, feature flags
    - Service: `product-service` 
    - Click any trace -> expand spans -> see custom metadata:
    - `business.user_id`, `business.session_id`
