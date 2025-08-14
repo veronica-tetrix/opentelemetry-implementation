@@ -60,11 +60,6 @@ http://localhost:16686
    - `business.user_id`, `business.session_id`
    - `performance.execution_time_ms`, `system.memory_usage_mb`
    - `custom.operation_type`, feature flags
-   - Service: `product-service` 
-   - Click any trace -> expand spans -> see custom metadata:
-   - `business.user_id`, `business.session_id`
-   - `performance.execution_time_ms`, `system.memory_usage_mb`
-   - `custom.operation_type`, feature flags
 
 Note: If Jaeger fails to start initially due to OpenSearch connection issues, restart it using `docker restart jaeger`.
 
