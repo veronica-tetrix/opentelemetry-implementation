@@ -27,13 +27,13 @@ curl http://localhost:8001/health
 curl http://localhost:8002/health
 ```
 
-#### Services Calls
+### Services Calls
 ```bash
 curl http://localhost:8001/users/1/recommendations
 curl http://localhost:8001/users/1/shopping-analysis
 ```
 
-#### Custom Metadata Injection
+### Custom Metadata Injection
 
 Generate traces run:
 ```bash
@@ -42,7 +42,7 @@ curl -H "x-client-id: client-001" -H "x-session-id: session-abc" "http://localho
 curl -H "x-client-id: client-002" -H "x-session-id: session-xyz" "http://localhost:8000/products/recommend?user_id=2002"
 ```
 
-#### View Traces
+### View Traces
 
 **Jaeger UI** (for better trace visualization):
 http://localhost:16686
@@ -68,7 +68,7 @@ http://localhost:16686
 
 Note: If Jaeger fails to start initially due to OpenSearch connection issues, restart it using `docker restart jaeger`.
 
-In OpenSearch Dashboard:
+**In OpenSearch Dashboard:**
 http://localhost:5601
 - Create index pattern: `jaeger-jaeger-span-*`
 - Filter: `process.serviceName: "product-service" AND operationName: "recommend_products"`
@@ -113,10 +113,10 @@ GET /jaeger-jaeger-span-*/_search
   }
 ```
 
-In Prometheus metrics:
+**In Prometheus metrics:**
 http://localhost:8889/metrics
 
-#### Files Explained
+### Files Explained
 - `services/user-service/main.py` - User service (calls Product service)
 - `services/product-service/main.py` - Product service (returns recommendations, calls Inventory service)
 - `services/inventory-service/main.py` - Inventory service (manages product availability and shipping)
